@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Solver stress test</title>
+<style>
+body { max-width: 1100px; margin: 2.5rem auto; padding: 0 1rem; font: 16px system-ui; color: #162a3a; }
+button, input { padding: .5rem .7rem; margin-right: .5rem; font: inherit; }
+pre { background: #eef2f6; padding: 1rem; white-space: pre-wrap; overflow-wrap: anywhere; max-height: 28rem; overflow: auto; }
+</style>
+<h1>Solver stress test (seeded fuzzing)</h1>
+<p>Random, reproducible cases combine thin films and deep water, steep and vertical bed steps,
+buildings, every boundary type, sources on dry ground, friction, and elevation offsets up to
+8,000 m. Every case runs on the fused batched kernel. Every tenth case is also compared step by
+step with the multi-pass kernel. Gates: no fatal failure, finite nonnegative depth, and a
+relative water budget ≤ 1e-5. Retries are counted.</p>
+<label>First seed <input id="seed" type="number" value="1" style="width:6rem"></label>
+<label>Cases <input id="count" type="number" value="300" style="width:6rem"></label>
+<label>Seed list <input id="list" placeholder="e.g. 3,18,101" style="width:12rem"></label>
+<label>Steps <input id="steps" type="number" value="400" style="width:6rem"></label>
+<button id="run">Run</button>
+<p id="status" role="status">Ready.</p>
+<pre id="output">No results yet.</pre>
+<script type="module" src="./stress.mjs"></script>
+</html>

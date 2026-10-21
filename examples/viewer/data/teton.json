@@ -1,0 +1,19 @@
+{
+  "width": 755,
+  "height": 300,
+  "dx": 40,
+  "rowOrder": "south-to-north",
+  "crs": "EPSG:5070",
+  "units": "m (NAVD88)",
+  "levelAtFailure_NAVD88_m": 1617.05816,
+  "fullPool_NAVD88_m": 1622.636,
+  "reservoirVolume_m3": 292831520.0,
+  "fullPoolVolume_m3": 336640576.0,
+  "damAxisDegreesFromEast": 18,
+  "sources": {
+    "terrain": "USGS 3DEP, https://elevation.nationalmap.gov/arcgis/rest/services/3DEPElevation/ImageServer/exportImage?bbox=-1260593.7883428554%2C..., retrieved 2026-10-19T19:50:05.510Z",
+    "levels": "Bureau of Reclamation, Teton Basin Project (usbr.gov/projects/index.php?id=414): reservoir 5,301.7 ft at failure, full pool 5,320.0 ft (288,250 acre-ft), crest 5,332.0 ft",
+    "datum": "NGVD29 assumed for the 1976 elevations; +1.100 m to NAVD88 (NGS VERTCON 3.0 at 43.90972 N, 111.53917 W)",
+    "released": "~240,000 acre-ft over about 8 hours (Scott, 1977, USGS OFR 77-507, citing Ray and Kjelstrom, 1977); flood surge 2.3 million ft\u00b3/s (Williams, 1979, USGS OFR 79-1335)"
+  }
+}

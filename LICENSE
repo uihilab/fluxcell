@@ -19,3 +19,22 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+
+Data and marks not covered by the MIT License
+
+- data/dem/*, examples/viewer/data/oroville-* and examples/viewer/data/teton-*:
+  derived from the USGS 3D Elevation Program (3DEP), a U.S. Government work in the
+  public domain.
+- examples/viewer/data/grandisle-bed.f32: derived from NOAA NCEI Continuously
+  Updated Digital Elevation Model (CUDEM) tiles (doi:10.25921/ds9v-ky35), public
+  domain.
+- examples/viewer/data/grandisle-solid.u8 and grandisle-shape.i8: derived from
+  OpenStreetMap data, (c) OpenStreetMap contributors, and available under the Open
+  Database License 1.0 (https://opendatacommons.org/licenses/odbl/1-0/); see
+  https://www.openstreetmap.org/copyright.
+- examples/viewer/data/monai-bed.f32 and monai.json: derived from NTHMP benchmark
+  problem 7 (https://github.com/rjleveque/nthmp-benchmark-problems), a laboratory
+  model of the Monai Valley coast (Central Research Institute of Electric Power
+  Industry; Liu, Yeh and Synolakis, 2008).
+- examples/viewer/logo_hilab.png and the HydroInformatics Lab name are not
+  licensed under the MIT License; all rights reserved.

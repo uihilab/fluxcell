@@ -1,0 +1,36 @@
+{
+  "name": "neworleans-17thstreet-2m",
+  "source": "USGS 3DEP ImageServer exportImage (bilinear, F32)",
+  "mosaic": "locked to lidar survey LA_2021GreaterNewOrleans: LA_2021GreaterNewOrleans_C22 (17292, 1 m), LA_2021GreaterNewOrleans_C22 (32078, 1 m), LA_2021GreaterNewOrleans_C22 (127349, 1 m)",
+  "url": "https://elevation.nationalmap.gov/arcgis/rest/services/3DEPElevation/ImageServer/exportImage?bbox=564761.4704022813%2C785547.6299403999%2C568857.4704022813%2C789643.6299403999&bboxSR=5070&imageSR=5070&size=2048%2C2048&format=bsq&pixelType=F32&noData=-9999&interpolation=RSP_BilinearInterpolation&mosaicRule=%7B%22mosaicMethod%22%3A%22esriMosaicLockRaster%22%2C%22lockRasterIds%22%3A%5B17292%2C32078%2C127349%5D%7D&f=image",
+  "retrieved": "2026-10-17T22:17:19.732Z",
+  "centre": {
+    "lon": -90.115,
+    "lat": 30.006
+  },
+  "crs": "EPSG:5070",
+  "bbox": [
+    564761.4704022813,
+    785547.6299403999,
+    568857.4704022813,
+    789643.6299403999
+  ],
+  "width": 640,
+  "height": 640,
+  "dx": 2,
+  "dy": 2,
+  "rowOrder": "north-to-south",
+  "units": "m (NAVD88)",
+  "min": -5.051893711090088,
+  "max": 7.976939678192139,
+  "window": {
+    "of": "neworleans-17thstreet-2m",
+    "origin": [
+      640,
+      1084
+    ],
+    "width": 2048,
+    "height": 2048
+  },
+  "note": "Window [640,1084,640,640] (x0, y0 from the south-west, width, height) of neworleans-17thstreet-2m, for the viewer demos."
+}

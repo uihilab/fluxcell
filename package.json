@@ -1,0 +1,50 @@
+{
+  "name": "fluxcell",
+  "version": "0.9.0",
+  "description": "FluxCell: second-order MUSCL-Hancock / HLLC shallow-water solver in WebGPU compute shaders (WGSL), with a fused single-dispatch tiled kernel",
+  "license": "MIT",
+  "keywords": [
+    "shallow-water",
+    "webgpu",
+    "wgsl",
+    "muscl-hancock",
+    "hllc",
+    "flood",
+    "finite-volume",
+    "gpu"
+  ],
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "exports": {
+    ".": {
+      "types": "./src/index.d.ts",
+      "default": "./src/index.mjs"
+    },
+    "./benchmarks": "./src/benchmarks.mjs",
+    "./scenarios": "./src/scenarios.mjs",
+    "./terrain": "./src/terrain.mjs",
+    "./transport": "./src/transport.mjs"
+  },
+  "types": "./src/index.d.ts",
+  "files": [
+    "src/",
+    "README.md",
+    "docs/API.md",
+    "docs/METHOD.md",
+    "LICENSE",
+    "CITATION.cff"
+  ],
+  "scripts": {
+    "test": "node --test tests/*.test.mjs",
+    "serve": "node tools/serve.mjs",
+    "dist": "node tools/dist.mjs"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/uihilab/FluxCell.git"
+  },
+  "homepage": "https://github.com/uihilab/FluxCell"
+}

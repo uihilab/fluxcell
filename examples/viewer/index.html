@@ -1,0 +1,262 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FluxCell</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Narrow:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="./site.css">
+<script src="./site.js"></script>
+<style>
+/* Examples page: the current example (number, title, stepping, description) over the map; the run
+   controls, variable, parameters and readout in the right column. The demos open in #examples. */
+body { text-transform: uppercase; }
+.main { display: grid; grid-template-rows: auto minmax(0, 1fr); }
+.about { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: .35rem 2rem; margin-bottom: 1rem; }
+.about .heading { display: flex; align-items: baseline; gap: .8rem; min-width: 0; }
+.about .number { color: var(--dim); font-variant-numeric: tabular-nums; }
+.about .title { font-size: 17px; font-weight: 600; letter-spacing: .02em; }
+.about .step { display: flex; gap: 1.1rem; color: var(--dim); align-self: baseline; white-space: nowrap; }
+.about p { grid-column: 1 / -1; margin: 0; color: var(--dim); max-width: 160ch; }
+.work { min-width: 0; min-height: 0; display: grid; place-items: center; }
+.stage { position: relative; }
+canvas { display: block; background: #000; touch-action: none; cursor: grab; }
+/* On the map: the ground elevation scale (top left) and the data credits (bottom right). */
+.maplegend { position: absolute; top: 10px; left: 10px; display: grid; gap: 3px; padding: 6px 8px 5px; background: rgba(255, 255, 255, .84);
+  color: #000; font-size: 11px; letter-spacing: .02em; pointer-events: none; }
+.maplegend[hidden] { display: none; }
+.maplegend .mlbar { width: 132px; height: 6px; background: linear-gradient(90deg, rgb(115, 148, 92), rgb(158, 163, 107) 40%, rgb(163, 138, 105) 75%, rgb(214, 209, 199)); }
+.maplegend .mlticks { display: flex; justify-content: space-between; font-variant-numeric: tabular-nums; }
+.attribution { position: absolute; right: 0; bottom: 0; padding: 2px 7px; background: rgba(255, 255, 255, .78); color: #333;
+  font-size: 10.5px; letter-spacing: .02em; text-transform: none; }
+/* Each group of controls: its name on one line, its choices on the line below. */
+.row { display: grid; gap: .3rem; }
+.row .label, .side .heading { font-weight: 600; }
+.row .items { display: flex; flex-wrap: wrap; gap: .15rem 1rem; }
+.variables .items { display: grid; grid-template-columns: 1fr 1fr; gap: .15rem 1rem; }
+/* A short explanation over the buttons after a moment's hover (the numerics). */
+.row .items { position: relative; }
+[data-tip]::after { content: attr(data-tip); position: absolute; left: 0; right: 0; bottom: calc(100% + 6px); z-index: 5; padding: .45rem .6rem;
+  background: var(--ink); color: var(--paper); font-size: 12px; line-height: 1.35; letter-spacing: 0; text-transform: none;
+  opacity: 0; pointer-events: none; transition: opacity .12s; }
+[data-tip]:hover::after { opacity: 1; transition-delay: .5s; }
+/* Run, speed and view: separate groups, ruled like the sections. */
+.controls .row + .row { border-top: 1px solid var(--rule); padding-top: .7rem; }
+.row button { color: var(--dim); }
+.row button[aria-pressed="true"] { color: var(--ink); }
+.row button[disabled] { opacity: .35; pointer-events: none; }
+.row[hidden] { display: none !important; }
+.side > section { gap: .75rem; }
+/* The colour scale of the variable: low end, bar, high end, unit. */
+.scale { display: grid; grid-template-columns: auto minmax(0, 1fr) auto auto; gap: .5rem; align-items: center; font-variant-numeric: tabular-nums; }
+.scale .bar { height: 5px; }
+/* Demo parameters: a label and value on one line, a thin slider under them. */
+.params .label { font-weight: 600; }
+.param { display: grid; grid-template-columns: 1fr auto; gap: .15rem .5rem; }
+.param .value { font-variant-numeric: tabular-nums; }
+.param .pending { grid-column: 1 / -1; color: var(--dim); }
+.param .pending[hidden] { display: none; }
+.param input { grid-column: 1 / -1; width: 100%; margin: 4px 0 0; height: 12px; background: transparent; -webkit-appearance: none; appearance: none; cursor: pointer; }
+.param input::-webkit-slider-runnable-track { height: 1px; background: var(--ink); }
+.param input::-moz-range-track { height: 1px; background: var(--ink); }
+.param input::-webkit-slider-thumb { -webkit-appearance: none; width: 9px; height: 9px; margin-top: -4px; background: var(--ink); border: 0; border-radius: 0; }
+.param input::-moz-range-thumb { width: 9px; height: 9px; background: var(--ink); border: 0; border-radius: 0; }
+/* Simulation readout: the short values two to a line, the longer ones across. */
+.readout { display: grid; grid-template-columns: 1fr 1fr; gap: .3rem 1.4rem; margin: 0; font-variant-numeric: tabular-nums; }
+.readout > div { display: flex; justify-content: space-between; gap: .6rem; min-width: 0; }
+.readout > div.wide { grid-column: 1 / -1; }
+.readout > div.stack { display: grid; gap: .3rem; }
+.readout > div[hidden] { display: none; }
+.readout dt { color: var(--dim); }
+.readout dd { margin: 0; white-space: nowrap; }
+.readout .arrow { display: inline-block; }
+/* The right column fits the window; on very short windows it scrolls rather than hiding controls. */
+.side { overflow: hidden auto; scrollbar-width: thin; }
+/* Short windows: everything a little closer, so the column still fits. */
+@media (max-height: 820px) {
+  .side { gap: .6rem; }
+  .side > section, .controls .row + .row { padding-top: .45rem; gap: .3rem; }
+}
+@media (max-height: 740px) {
+  .side { gap: .45rem; }
+  .side > section, .controls .row + .row { padding-top: .35rem; gap: .2rem; }
+}
+@media (max-height: 820px) {
+  .row { gap: .15rem; }
+  .readout { gap: .2rem 1.4rem; }
+  .hilab { padding: 4px 8px 4px 6px; }
+  .hilab img { height: 30px; }
+  .about { margin-bottom: .7rem; }
+}
+.status { margin: 0; color: var(--dim); }
+.status:has(> span:empty + span:empty) { display: none; }
+#error { color: #c0392b; }
+/* Examples window: the demos by group, numbered, the current one marked. */
+dialog.catalog { border: 0; padding: 1.3rem 1.6rem 1.6rem; width: min(68rem, calc(100vw - 2rem)); max-height: calc(100vh - 3rem);
+  background: var(--paper); color: var(--ink); box-shadow: 0 18px 60px rgba(0, 0, 0, .35); }
+dialog.catalog::backdrop { background: rgba(0, 0, 0, .42); backdrop-filter: blur(2px); }
+.catalog header { display: flex; align-items: baseline; gap: 1rem;
+  padding-bottom: .8rem; margin-bottom: 1.2rem; border-bottom: 1px solid var(--rule); }
+.catalog header b { font-size: 17px; letter-spacing: .02em; }
+.catalog header button { color: var(--dim); }
+.catalog header .keys { margin-left: auto; }
+.catalog header .keys + button { margin-left: 1.4rem; }
+.catalog .groups { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.6rem 2.4rem; }
+.catalog .group { display: grid; align-content: start; gap: .1rem; }
+.catalog .group h2 { font: inherit; font-weight: 600; margin: 0; }
+.catalog .group p { margin: 0 0 .45rem; color: var(--dim); }
+.catalog .group button { display: grid; grid-template-columns: 1.9rem 1fr; padding: .22rem .35rem; margin: 0 -.35rem; color: var(--dim); }
+.catalog .group button:hover { color: var(--ink); background: var(--shade); }
+.catalog .group button[aria-current="true"] { color: var(--ink); background: var(--shade); }
+.catalog .group button span:first-child { font-variant-numeric: tabular-nums; }
+.hidden-controls { display: none; }
+@media (max-width: 1100px) { .catalog .groups { grid-template-columns: repeat(2, minmax(0, 1fr)); } .catalog header .keys { display: none; } .catalog header button { margin-left: auto; } }
+@media (max-width: 860px) {
+  .main { display: block; }
+  .work { height: auto; }
+  .about { grid-template-columns: 1fr; gap: .45rem; }
+  .about .heading { display: grid; gap: .15rem; }
+  .about .title { font-size: 16px; }
+  /* The description in three lines, the rest behind More. */
+  .about p:not(.open) { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+  .about .more:not([hidden]) { display: inline; justify-self: start; color: var(--ink); }
+  /* The examples fill the screen, the header kept in view. */
+  dialog.catalog { width: 100vw; max-width: 100vw; height: 100dvh; max-height: 100dvh; margin: 0; padding: 0 1.1rem 1.4rem; box-shadow: none; }
+  .catalog header { position: sticky; top: 0; z-index: 1; background: var(--paper); padding-top: 1rem; }
+  .catalog .groups { grid-template-columns: 1fr; }
+  .attribution { font-size: 9.5px; }
+}
+.about .more { display: none; }
+@media (max-width: 1100px) { .catalog header .keys + button { margin-left: auto; } }
+/* Touch screens: larger targets, sliders easier to hold. */
+@media (pointer: coarse) {
+  .row .items { gap: 0 .4rem; }
+  .row button { padding: .45rem .8rem .45rem 0; }
+  .variables .items { gap: 0 1rem; }
+  .catalog .group button { padding: .55rem .35rem; }
+  .about .step button, .catalog header button { padding: .35rem 0; }
+  .param input { height: 30px; }
+  .param input::-webkit-slider-thumb { width: 20px; height: 20px; margin-top: -10px; border-radius: 50%; }
+  .param input::-moz-range-thumb { width: 20px; height: 20px; border-radius: 50%; }
+}
+</style>
+<div class="page">
+  <header class="top">
+    <div class="brand"><a class="wordmark" href="./">FluxCell</a><span class="dim">v0.9</span>
+      <p>A second-order MUSCL-Hancock scheme with HLLC fluxes, in WebGPU.</p></div>
+    <nav class="links">
+      <button id="openExamples" aria-current="page" aria-haspopup="dialog">Examples</button>
+      <a href="./guide.html">Guide</a>
+      <a href="./references.html">References</a>
+      <a href="https://github.com/uihilab/FluxCell" target="_blank" rel="noopener">GitHub</a>
+      <button id="theme" class="theme">Dark</button>
+    </nav>
+  </header>
+  <div class="main">
+    <section class="about">
+      <div class="heading"><span class="number" id="number"></span><b class="title" id="title"></b></div>
+      <div class="step"><button id="prevDemo" title="Previous example (←)">← Previous</button><button id="nextDemo" title="Next example (→)">Next →</button></div>
+      <p id="about"></p>
+      <button class="more" id="aboutMore" hidden>More</button>
+    </section>
+    <main class="work">
+      <div class="stage"><canvas id="canvas" width="1024" height="512"></canvas>
+        <div class="maplegend" id="mapLegend" hidden><span id="mlLabel">Elevation</span><span class="mlbar" id="mlBar"></span>
+          <span class="mlticks"><span id="mlLo"></span><span id="mlHi"></span></span></div>
+        <span class="attribution">Data: USGS 3DEP, NOAA CUDEM, © OpenStreetMap contributors, NTHMP</span></div>
+    </main>
+  </div>
+  <aside class="side">
+    <section class="controls" id="controls"></section>
+    <section class="variables" id="colours">
+      <div class="scale" title="Colour scale"><span id="legendLo"></span><span id="legendBar" class="bar"></span><span id="legendHi"></span><span id="legend" class="dim"></span></div>
+    </section>
+    <section class="params" id="params" hidden></section>
+    <section>
+      <span class="heading">Simulation</span>
+      <dl class="readout">
+        <div><dt>Time</dt><dd id="rTime">—</dd></div>
+        <div><dt>Grid</dt><dd id="rGrid">—</dd></div>
+        <div title="Simulated seconds per second"><dt>Real time</dt><dd id="speedValue">—</dd></div>
+        <div><dt>Steps/s</dt><dd id="rSteps">—</dd></div>
+        <div id="addedRow" class="wide" hidden><dt>Water added</dt><dd id="rAdded">—</dd></div>
+        <div id="gaugeRow" class="wide" hidden><dt id="gaugeLabel">Reservoir</dt><dd id="rGauge">—</dd></div>
+        <div id="outflowRow" class="wide stack" hidden><dt>Outflow</dt><dd id="rOutflow">—</dd></div>
+        <div id="windRow" class="wide" hidden><dt>Wind</dt><dd><span id="windArrow" class="arrow">→</span> <span id="rWind"></span></dd></div>
+      </dl>
+    </section>
+    <section class="settings" id="settings"></section>
+    <section class="settings" id="toolbox" hidden></section>
+    <div class="foot">
+      <p class="status"><span id="hud"></span><span id="error" role="alert"></span></p>
+      <a class="hilab" href="https://hydroinformatics.tulane.edu/" target="_blank" rel="noopener" title="HydroInformatics Lab @ Tulane University">
+        <img src="./logo_hilab.png" alt="HILab">
+        <span><span class="name">HydroInformatics Lab</span><span class="at">@Tulane University</span></span>
+      </a>
+    </div>
+  </aside>
+</div>
+
+<dialog class="catalog" id="examples" aria-label="Examples">
+  <header><b>Examples</b><span class="dim" id="examplesCount"></span><span class="dim keys">E opens this list, ← and → step through it, space pauses</span><button id="closeExamples">Close</button></header>
+  <div class="groups" id="catalog"></div>
+</dialog>
+
+<div class="hidden-controls">
+  <select id="scenario">
+    <optgroup label="Field cases" data-note="Real terrain from lidar and bathymetry">
+      <option value="grandisle-ida">Grand Isle, LA: Hurricane Ida surge and surf</option>
+      <option value="neworleans2m-breach">New Orleans: 17th Street Canal breach</option>
+      <option value="yosemite2m-release">Yosemite: release over El Capitan</option>
+      <option value="yosemite2m-rain">Yosemite: 100 mm/h rain</option>
+      <option value="oroville">Oroville spillways, California, 2017</option>
+      <option value="teton-dam">Teton Dam failure, Idaho, 1976</option>
+    </optgroup>
+    <optgroup label="Benchmarks" data-note="Laboratory experiments and exact solutions">
+      <option value="conical-island">Solitary wave on a conical island (NTHMP)</option>
+      <option value="monai">Monai Valley runup (NTHMP)</option>
+      <option value="partial-breach">Partial breach (Fennema–Chaudhry 1990)</option>
+      <option value="riemann">Four-quadrant Riemann problem</option>
+      <option value="oblique-shock">Oblique shock at a wall</option>
+      <option value="hydraulic-jump">Hydraulic jump</option>
+    </optgroup>
+    <optgroup label="Waves" data-note="Diffraction, refraction, and rotation">
+      <option value="double-slit">Two-slit interference</option>
+      <option value="shoal">Wave focusing over a shoal</option>
+      <option value="kelvin-wave">Kelvin wave in a rotating basin</option>
+    </optgroup>
+    <optgroup label="Vortices and rotation" data-note="Shear layers, wakes, and turbulence">
+      <option value="kelvin-helmholtz">Kelvin–Helmholtz shear layer</option>
+      <option value="vortex-street">Vortex street behind an island</option>
+      <option value="turbulence">Decaying 2D turbulence</option>
+      <option value="vortex">Steady vortex winding a tracer front</option>
+      <option value="dipoles">Colliding vortex dipoles</option>
+      <option value="rotating-dam-break">Rotating dam break (Coriolis)</option>
+    </optgroup>
+    <optgroup label="Wind and transport" data-note="Wind stress, tracers, and sediment">
+      <option value="wind-lake">Wind-driven circulation in a lake</option>
+      <option value="mud-plume">Muddy river plume settling out</option>
+      <option value="bridge-scour">Scour at bridge piles</option>
+      <option value="urban-spill">City dam break: contaminated reservoir</option>
+    </optgroup>
+    <optgroup label="Playground" data-note="Sculpt the bed and pour water">
+      <option value="playground-sand">Sand table: sculpt and pour</option>
+      <option value="playground-neworleans">New Orleans lidar: levees and channels</option>
+    </optgroup>
+</select>
+  <select id="colour">
+    <option value="elevation">Water level</option><option value="depth">Depth</option><option value="speed">Speed</option><option value="bed">Bed change</option>
+    <option value="vorticity">Vorticity</option><option value="concentration">Concentration</option>
+  </select>
+  <button id="play">Pause</button><button id="reset">Reset</button>
+  <input id="speed" type="range" min="-1" max="1.5" step="0.05" value="0">
+  <input type="checkbox" id="lowFroude"><input type="checkbox" id="closure">
+  <div id="tools" hidden>
+    <input type="radio" name="brush" value="water" checked><input type="radio" name="brush" value="contaminant">
+    <input id="flow" type="range" min="0" max="3" step="0.05" value="1.5"><output id="flowValue"></output>
+    <input id="radius" type="range" min="1" max="20" step="1" value="5"><input type="checkbox" id="rain">
+  </div>
+</div>
+<script type="module" src="./main.mjs"></script>
+</html>

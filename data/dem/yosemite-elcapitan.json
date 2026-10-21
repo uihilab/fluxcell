@@ -1,0 +1,26 @@
+{
+  "name": "yosemite-elcapitan",
+  "source": "USGS 3DEP ImageServer exportImage (bilinear, F32)",
+  "mosaic": "default mosaic",
+  "url": "https://elevation.nationalmap.gov/arcgis/rest/services/3DEPElevation/ImageServer/exportImage?bbox=-2043317.1630251505%2C1886171.3486104729%2C-2040757.1630251505%2C1888731.3486104729&bboxSR=5070&imageSR=5070&size=256%2C256&format=bsq&pixelType=F32&noData=-9999&interpolation=RSP_BilinearInterpolation&f=image",
+  "retrieved": "2026-10-16T17:27:54.876Z",
+  "centre": {
+    "lon": -119.633,
+    "lat": 37.727
+  },
+  "crs": "EPSG:5070",
+  "bbox": [
+    -2043317.1630251505,
+    1886171.3486104729,
+    -2040757.1630251505,
+    1888731.3486104729
+  ],
+  "width": 256,
+  "height": 256,
+  "dx": 10,
+  "dy": 10,
+  "rowOrder": "north-to-south",
+  "units": "m (NAVD88)",
+  "min": 1197.4996337890625,
+  "max": 2324.911376953125
+}

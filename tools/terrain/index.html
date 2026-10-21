@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Real-terrain checks</title>
+<style>
+body { max-width: 1150px; margin: 2.5rem auto; padding: 0 1rem; font: 16px system-ui; color: #162a3a; }
+button { padding: .6rem .9rem; margin-right: .5rem; }
+table { border-collapse: collapse; margin: 1rem 0; font-variant-numeric: tabular-nums; font-size: 14px; }
+th, td { padding: .3rem .55rem; border-bottom: 1px solid #d5dde5; text-align: right; }
+th:nth-child(-n+2), td:nth-child(-n+2) { text-align: left; }
+pre { background: #eef2f6; padding: 1rem; white-space: pre-wrap; overflow-wrap: anywhere; max-height: 22rem; overflow: auto; }
+</style>
+<h1>Real-terrain checks (USGS 3DEP, 10 m)</h1>
+<p>Two 2.56 km tiles: Yosemite Valley at El Capitan (1,127 m relief, 420 m drops between
+neighbouring cells) and New Orleans Lakeview (−4.8 to 2.9 m NAVD88). Cases: still lake,
+100 mm/h rain, a water release on the highest ground, and a breach-like inflow. Gates:
+finite nonnegative state, closed water budget, lake at rest, bitwise fused/multi-pass
+equivalence and short-horizon agreement with the f64 CPU reference. MUSCL-vs-Rusanov
+differences and the effect of the f32 datum shift are reported, not gated.</p>
+<button id="run">Run terrain checks</button>
+<button id="download" disabled>Download report</button>
+<p id="status" role="status">Ready. Requires WebGPU on localhost or HTTPS.</p>
+<table id="table"><thead><tr><th>Tile</th><th>Case</th><th>Steps</th><th>Budget resid.</th><th>Max h (m)</th>
+<th>Max speed (h&gt;1 cm)</th><th>Wet km²</th><th>Out (m³)</th><th>Retries</th><th>Fused≡multi</th><th>CPU depth err</th><th>Steps/s</th><th>Pass</th></tr></thead><tbody></tbody></table>
+<pre id="output">No results yet.</pre>
+<script type="module" src="./check.mjs"></script>
+</html>

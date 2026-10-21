@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NTHMP benchmarks</title>
+<style>
+body { max-width: 1100px; margin: 2.5rem auto; padding: 0 1rem; font: 16px system-ui; color: #162a3a; }
+button { padding: .5rem .7rem; font: inherit; }
+pre { background: #eef2f6; padding: 1rem; white-space: pre-wrap; overflow-wrap: anywhere; max-height: 36rem; overflow: auto; }
+</style>
+<h1>NTHMP laboratory benchmarks</h1>
+<p>Benchmark problem 6, solitary waves on a conical island (Briggs et al., 1995). The fused GPU kernel
+runs cases A to C; the page records the water level at the laboratory gauges and the maximum depth
+around the island, from which the runup is computed. Laboratory data are compared offline
+(data/nthmp/BP06, not versioned).</p>
+<label>Runs <input id="runs" value="B:0.025:0,C:0.025:0,B:0.0125:0,C:0.0125:0,C:0.025:0.015,A:0.025:0,Bm:0.025:0,Bm:0.0125:0" size="60"></label>
+<button id="run">Run</button>
+<p id="status" role="status">Ready.</p>
+<pre id="output">No results yet.</pre>
+<script type="module" src="./nthmp.mjs"></script>
+</html>

@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>EA benchmark runner</title>
+<style>
+body { max-width: 1100px; margin: 2.5rem auto; padding: 0 1rem; font: 16px system-ui; color: #162a3a; }
+button, label { font: inherit; margin-right: .8rem; }
+button { padding: .5rem .7rem; }
+pre { background: #eef2f6; padding: 1rem; white-space: pre-wrap; overflow-wrap: anywhere; max-height: 36rem; overflow: auto; }
+</style>
+<h1>UK Environment Agency 2D benchmarks (tests 1 to 6B)</h1>
+<p>Cases are prepared from the published 2010 datasets by <code>node tools/ea/prepare.mjs</code>
+(download the data first; see <code>tools/ea/README.md</code>). Each test runs on the fused kernel
+at the specified resolution or at half the cell size.</p>
+<label><input type="checkbox" id="fine"> Half cell size</label>
+<button id="run">Run</button>
+<p id="status" role="status">Ready.</p>
+<pre id="output">No results yet.</pre>
+<script type="module" src="./ea.mjs"></script>
+</html>

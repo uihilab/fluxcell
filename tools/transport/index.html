@@ -1,0 +1,15 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Transport verification</title>
+<style>body { max-width: 900px; margin: 2.5rem auto; padding: 0 1rem; font: 16px system-ui; color: #162a3a; } button, input { padding: .4rem .6rem; font: inherit; } pre { font-size: 12px; white-space: pre-wrap; }</style>
+<h1>Scalar transport on the GPU (fused kernel)</h1>
+<p>Equivalence with the f64 MUSCL reference, conservation, bounds, exact solutions, batch invariance and stress.</p>
+<label>Parts <input id="parts" value="equivalence,batch,rollback,convergence,stress" size="40"></label>
+<label>Stress cases <input id="count" type="number" value="200" min="1"></label>
+<button id="run">Run</button>
+<p id="status" role="status">Ready.</p>
+<pre id="output"></pre>
+<script type="module" src="./transport.mjs"></script>
+</html>

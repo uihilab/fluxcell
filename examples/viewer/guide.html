@@ -1,0 +1,229 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FluxCell guide</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Narrow:wght@400;600&family=IBM+Plex+Mono:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="./site.css">
+<script src="./site.js"></script>
+<style>
+/* Guide: code in IBM Plex Mono, on a dark panel, coloured, and wrapped so nothing scrolls sideways. */
+.doc code { font: 13.5px/1.45 "IBM Plex Mono", ui-monospace, "Cascadia Mono", Consolas, monospace; background: var(--code); padding: .08em .35em; border-radius: 3px; }
+.doc pre { font: 13.5px/1.65 "IBM Plex Mono", ui-monospace, "Cascadia Mono", Consolas, monospace; background: #15181d; color: #e3e6ea; padding: 1rem 1.25rem;
+  margin: 0 0 1rem; border-radius: 4px; white-space: pre-wrap; overflow-wrap: anywhere; }
+.doc pre code { background: none; padding: 0; font: inherit; color: inherit; }
+.doc pre .comment { color: #8b949e; font-style: italic; }
+.doc pre .string { color: #a5d6ff; }
+.doc pre .keyword { color: #ff9b8f; }
+.doc pre .number { color: #f2cc8f; }
+.doc table { border-collapse: collapse; width: 100%; margin: 0 0 .9rem; font-size: 13.5px; }
+.doc th, .doc td { text-align: left; vertical-align: top; padding: .3rem .6rem .3rem 0; border-bottom: 1px solid var(--rule); }
+.doc th { font-weight: 600; }
+.doc td code { overflow-wrap: anywhere; }
+.doc math { font-size: 1.08em; }
+.doc math[display="block"] { margin: .6rem 0 .9rem; max-width: 100%; }
+.doc .note { color: var(--dim); }
+</style>
+<div class="page docs">
+  <header class="top">
+    <div class="brand"><a class="wordmark" href="./">FluxCell</a><span class="dim">v0.9</span>
+      <p>A second-order MUSCL-Hancock scheme with HLLC fluxes, in WebGPU.</p></div>
+    <nav class="links">
+      <a href="./#examples">Examples</a>
+      <a href="./guide.html" aria-current="page">Guide</a>
+      <a href="./references.html">References</a>
+      <a href="https://github.com/uihilab/FluxCell" target="_blank" rel="noopener">GitHub</a>
+      <button id="theme" class="theme">Dark</button>
+    </nav>
+  </header>
+  <main class="main scroll">
+    <article class="doc">
+    <p class="lead"><b>Guide.</b> <span class="dim">How to use the library, what it solves and how, and how it has been checked.</span></p>
+
+    <section id="start">
+      <h2>01 Quick start</h2>
+      <p>FluxCell solves the two-dimensional shallow-water equations on a uniform grid with WebGPU compute shaders. It is plain ES modules with no dependencies and no build step: serve the <code>src/</code> folder and import it.</p>
+<pre><code>import { compileKernels, createSolver } from './fluxcell/src/index.mjs';
+
+const adapter = await navigator.gpu.requestAdapter();
+const device = await adapter.requestDevice();
+const kernels = await compileKernels(device, 'muscl-fused'); // compile once
+
+// 200 m x 100 m flat channel, 1 m cells: a dam at x = 50 m, 2 m of water
+// behind it and 0.5 m beyond.
+const width = 200, height = 100, n = width * height;
+const bed = new Float32Array(n);           // bed elevation (m)
+const state = new Float32Array(4 * n);     // per cell [h, hu, hv, 0]
+for (let i = 0; i &lt; n; i++) state[4 * i] = i % width &lt; 50 ? 2 : 0.5;
+
+const solver = await createSolver(device,
+    { width, height, dx: 1, dy: 1,
+      boundaryX: 'outflow', boundaryY: 'wall' },
+    { state, bed, manning: new Float32Array(n).fill(0.03) },
+    kernels);
+try {
+    await solver.advance(30);              // 30 s of simulated time
+    const result = await solver.readState();
+    console.log('centre depth', result[4 * (50 * width + 100)], 'm');
+} finally {
+    solver.destroy();                      // the caller owns the device
+}</code></pre>
+      <p>Rows run south to north and columns west to east; cell <code>i = y * width + x</code>. Depths are in metres, discharges per unit width in m²/s. With a bundler or Node, the package name is <code>fluxcell</code>.</p>
+    </section>
+
+    <section id="inputs">
+      <h2>02 Configuration and inputs</h2>
+      <p><code>createSolver(device, config, initial, kernels)</code> validates everything and rejects inconsistent input (negative or nonfinite depths, momentum in dry cells, water in solid cells) instead of correcting it.</p>
+      <h3>Configuration</h3>
+      <table>
+        <tr><th>Option</th><th>Meaning</th></tr>
+        <tr><td><code>width</code>, <code>height</code></td><td>Grid size in cells.</td></tr>
+        <tr><td><code>dx</code>, <code>dy</code></td><td>Cell size (m).</td></tr>
+        <tr><td><code>gravity</code>, <code>cfl</code></td><td>9.81 m/s² and 0.4 by default; the CFL number may not exceed 0.4.</td></tr>
+        <tr><td><code>boundaryX</code>, <code>boundaryY</code></td><td><code>wall</code>, <code>periodic</code>, <code>open</code> (zero-gradient) or <code>outflow</code> (lets water out, reflects inflow).</td></tr>
+        <tr><td><code>hydrographs</code></td><td>Edge segments with a time series: <code>stage</code> (water level), <code>discharge</code> (inflow, m³/s) or <code>wave</code> (incident wave on a still level; outgoing waves leave).</td></tr>
+        <tr><td><code>rain</code></td><td>Uniform rainfall (m/s).</td></tr>
+        <tr><td><code>datum</code></td><td><code>'auto'</code> subtracts the lowest bed in double precision, so f32 keeps centimetre precision on high terrain.</td></tr>
+        <tr><td><code>tracer</code>, <code>diffusivity</code></td><td>Transport a passive or settling scalar (concentration) with the flow.</td></tr>
+        <tr><td><code>settling</code></td><td><code>{ velocity, exponent }</code>: the tracer settles at w<sub>s</sub> = velocity · c<sup>exponent</sup> (flocculation for exponent &gt; 0).</td></tr>
+        <tr><td><code>wind</code>, <code>windDrag</code></td><td>Wind at 10 m (m/s) and its drag coefficient (Wu, 1982, by default).</td></tr>
+        <tr><td><code>coriolis</code></td><td>Coriolis parameter f (1/s).</td></tr>
+        <tr><td><code>eddyViscosity</code>, <code>smagorinsky</code>, <code>bedTurbulence</code></td><td>Turbulence closure (off by default): an eddy viscosity for the turbulence the grid cannot resolve, from a constant background, the Smagorinsky term on the resolved shear, and a bed-generated term from friction. It damps the smallest eddies and mixes a tracer with them.</td></tr>
+        <tr><td><code>lowFroude</code></td><td>Low-Froude correction (MUSCL kernels): in slow flow the upwind fluxes add dissipation scaled by the gravity-wave speed, which smears eddies and weak currents; the correction (Thornber et al., 2008) scales it down with the local Froude number. Fast flow and a lake at rest are unchanged.</td></tr>
+      </table>
+      <h3>Initial data and forcing</h3>
+      <table>
+        <tr><th>Field</th><th>Meaning</th></tr>
+        <tr><td><code>state</code></td><td><code>[h, hu, hv, 0]</code> per cell (m, m²/s).</td></tr>
+        <tr><td><code>bed</code></td><td>Bed elevation per cell (m).</td></tr>
+        <tr><td><code>manning</code></td><td>Manning roughness n per cell (s/m<sup>1/3</sup>).</td></tr>
+        <tr><td><code>source</code></td><td>Water added per cell (m/s); a discharge Q over cells of area A is Q / (number of cells · A).</td></tr>
+        <tr><td><code>solid</code></td><td>1 for buildings, piers and walls (impermeable cells), else 0.</td></tr>
+        <tr><td><code>concentration</code>, <code>sourceConcentration</code></td><td>Initial tracer concentration and that of source water (with <code>tracer: true</code>).</td></tr>
+      </table>
+<pre><code>// A river reach: 40 m³/s entering on the west edge (ramped over 10 min), the east edge held at 2.5 m.
+hydrographs: [
+    { edge: 'west', kind: 'discharge', series: [[0, 0], [600, 40]] },
+    { edge: 'east', kind: 'stage', series: [[0, 2.5]] },
+]</code></pre>
+    </section>
+
+    <section id="control">
+      <h2>03 Running and control</h2>
+      <table>
+        <tr><th>Method</th><th>Use</th></tr>
+        <tr><td><code>advance(duration, { maxDt, batch })</code></td><td>Integrate a time interval. The GPU chooses every timestep and runs up to 256 steps per submission; a failed step is rolled back and retried at a smaller step.</td></tr>
+        <tr><td><code>step(maxDt)</code></td><td>One accepted step; returns its length.</td></tr>
+        <tr><td><code>encode(encoder, …)</code>, <code>resolve()</code></td><td>Non-blocking stepping inside your own command encoder, for render loops.</td></tr>
+        <tr><td><code>readState()</code>, <code>readTracer()</code></td><td>Copy the fields back to the CPU.</td></tr>
+        <tr><td><code>readBoundaryOutflow()</code></td><td>Net volume that has left through the edges (m³; inflow negative).</td></tr>
+        <tr><td><code>setForcing({ manning, source, … })</code></td><td>Change roughness or sources between steps (rainfall series, pumps, releases).</td></tr>
+        <tr><td><code>setParameters({ wind, coriolis, settling })</code></td><td>Change physical parameters while the run continues.</td></tr>
+        <tr><td><code>setHydrographs(list)</code></td><td>Replace boundary series while the run continues (same segments).</td></tr>
+        <tr><td><code>setBed(cells, elevations)</code></td><td>Edit the terrain under the water, as in the playground demos.</td></tr>
+        <tr><td><code>destroy()</code></td><td>Free the GPU buffers.</td></tr>
+      </table>
+      <p>Host fields: <code>time</code>, <code>sourceVolume</code>, <code>counters</code> (flux fallbacks, order reductions, retries) and <code>allocatedBytes</code>. The double-precision CPU solvers <code>MusclReferenceSolver</code> and <code>ReferenceSolver</code> take the same configuration and run in Node or the browser, for testing and for checking GPU results.</p>
+      <p class="note">Full reference: <a href="https://github.com/uihilab/FluxCell/blob/main/docs/API.md" target="_blank" rel="noopener">docs/API.md</a>.</p>
+    </section>
+
+    <section id="equations">
+      <h2>04 Equations</h2>
+      <p>The depth-averaged shallow-water (Saint-Venant) equations for depth <i>h</i> and discharges <i>hu</i>, <i>hv</i> over a bed <i>z</i>:</p>
+      <math display="block"><mrow><msub><mo>∂</mo><mi>t</mi></msub><mi>h</mi><mo>+</mo><msub><mo>∂</mo><mi>x</mi></msub><mo>(</mo><mi>h</mi><mi>u</mi><mo>)</mo><mo>+</mo><msub><mo>∂</mo><mi>y</mi></msub><mo>(</mo><mi>h</mi><mi>v</mi><mo>)</mo><mo>=</mo><mi>R</mi><mo>+</mo><mi>S</mi></mrow></math>
+      <math display="block"><mrow><msub><mo>∂</mo><mi>t</mi></msub><mo>(</mo><mi>h</mi><mi>u</mi><mo>)</mo><mo>+</mo><msub><mo>∂</mo><mi>x</mi></msub><mrow><mo>(</mo><mi>h</mi><msup><mi>u</mi><mn>2</mn></msup><mo>+</mo><mfrac><mn>1</mn><mn>2</mn></mfrac><mi>g</mi><msup><mi>h</mi><mn>2</mn></msup><mo>)</mo></mrow><mo>+</mo><msub><mo>∂</mo><mi>y</mi></msub><mo>(</mo><mi>h</mi><mi>u</mi><mi>v</mi><mo>)</mo><mo>=</mo><mo>−</mo><mi>g</mi><mi>h</mi><msub><mo>∂</mo><mi>x</mi></msub><mi>z</mi><mo>−</mo><mfrac><mrow><mi>g</mi><msup><mi>n</mi><mn>2</mn></msup><mo>|</mo><mi mathvariant="bold">u</mi><mo>|</mo><mi>u</mi></mrow><msup><mi>h</mi><mrow><mn>1</mn><mo>/</mo><mn>3</mn></mrow></msup></mfrac><mo>+</mo><msub><mi>τ</mi><mi>x</mi></msub><mo>+</mo><mi>f</mi><mi>h</mi><mi>v</mi></mrow></math>
+      <p>and likewise for <i>hv</i>. <i>R</i> and <i>S</i> are rain and sources, the second term on the right is Manning friction, τ the kinematic wind stress and <i>f</i> the Coriolis parameter. A tracer of concentration <i>c</i> obeys</p>
+      <math display="block"><mrow><msub><mo>∂</mo><mi>t</mi></msub><mo>(</mo><mi>h</mi><mi>c</mi><mo>)</mo><mo>+</mo><mo>∇</mo><mo>·</mo><mo>(</mo><mi>h</mi><mi mathvariant="bold">u</mi><mi>c</mi><mo>)</mo><mo>=</mo><mo>∇</mo><mo>·</mo><mo>(</mo><mi>h</mi><mi>D</mi><mo>∇</mo><mi>c</mi><mo>)</mo><mo>+</mo><mi>S</mi><msub><mi>c</mi><mi>S</mi></msub><mo>−</mo><msub><mi>w</mi><mi>s</mi></msub><mi>c</mi></mrow></math>
+      <p>with diffusivity <i>D</i> (plus the eddy diffusivity of the closure, if on) and settling velocity <i>w</i><sub>s</sub>.</p>
+    </section>
+
+    <section id="scheme">
+      <h2>05 Numerical scheme</h2>
+      <p>A conservative finite-volume method: each cell holds averages of <i>h</i>, <i>hu</i>, <i>hv</i>, and each step exchanges fluxes across the four faces of every cell, so water is conserved to rounding.</p>
+      <ol>
+        <li><b>Reconstruction (MUSCL).</b> Slopes of surface elevation and velocity in each cell, limited by the monotonized-central limiter, give second-order values at the faces without new extrema. Reconstructing the surface (<i>h</i> + <i>z</i>) and not the depth keeps a lake at rest exactly at rest.</li>
+        <li><b>Hancock predictor.</b> The face values are advanced by half a step with the local equations, making the scheme second order in time in a single stage.</li>
+        <li><b>Hydrostatic reconstruction</b> (Audusse et al., 2004) at each face keeps depths nonnegative and balances the bed-slope term against the pressure flux (well-balanced).</li>
+        <li><b>HLLC Riemann solver</b> (Toro et al., 1994). The flux through each face is the solution of the local Riemann problem with the contact wave restored, which keeps shear layers and tracer fronts sharp. Wet/dry faces and degenerate states fall back to HLLE.</li>
+        <li><b>Update and sources.</b> The conservative update, then rain and sources, wind stress, the exact Coriolis rotation, and Manning friction applied implicitly (unconditionally stable, never reverses the flow).</li>
+        <li><b>Wetting and drying.</b> Thin layers below 0.1 mm reconstruct at first order and have their velocity regularized, so fronts advance over dry ground without negative depths or spurious speeds.</li>
+        <li><b>Timestep.</b> CFL 0.4 from the largest wave speed |u| + √(gh) and the boundary ghost states, computed on the GPU at every step.</li>
+      </ol>
+      <p>A first-order Rusanov scheme is kept as a control.</p>
+    </section>
+
+    <section id="gpu">
+      <h2>06 GPU implementation</h2>
+      <p>Three kernels share one interface: <code>muscl-fused</code> (the production path), <code>muscl-hancock</code> (the same method in five auditable passes) and <code>rusanov</code> (first-order control). The fused kernel loads a 20 × 20 tile with a two-cell halo into workgroup memory and performs reconstruction, fluxes, the update and the next step's wave speeds in one dispatch; faces on tile seams are computed identically by both neighbours, so mass still cancels exactly.</p>
+      <ul>
+        <li>The timestep is chosen on the GPU; the host reads back once per batch of up to 256 steps.</li>
+        <li>Depth carries a compensation term (Kahan summation) and the bed is shifted by a double-precision datum, so f32 holds lakes at rest exactly and keeps precision over thousands of metres of relief.</li>
+        <li>An invalid step anywhere rolls the batch back to its checkpoint and replays it one step at a time, retrying at half the step.</li>
+        <li>Results do not depend on batch size: the same run in batches of 1, 16 or 256 steps is bitwise identical.</li>
+      </ul>
+    </section>
+
+    <section id="verification">
+      <h2>07 Verification</h2>
+      <p>Every GPU kernel is compared, step by step, with a double-precision CPU implementation of the same method, and both are compared with exact or measured results.</p>
+      <table>
+        <tr><th>Check</th><th>What it shows</th></tr>
+        <tr><td>Lake at rest, exact f32 lakes, shorelines, obstacles</td><td>Still water stays still (well-balanced), to rounding.</td></tr>
+        <tr><td>Smooth simple wave, diagonal wave, steady flow over a bump</td><td>Second-order convergence (observed order about 2).</td></tr>
+        <tr><td>Wet and dry dam breaks, Fennema–Chaudhry partial breach</td><td>Shocks and fronts without oscillations or negative depths.</td></tr>
+        <tr><td>SWASHES analytic solutions (Thacker paraboloid, Goutal–Maurel bump flows)</td><td>Moving shorelines and transcritical flow.</td></tr>
+        <tr><td>UK Environment Agency 2D benchmarks 1–6B</td><td>Ponding, overtopping, momentum conservation, dam-break laboratory gauges.</td></tr>
+        <tr><td>NTHMP benchmarks 6 (conical island) and 7 (Monai Valley)</td><td>Runup within the programme's acceptance criteria (Monai valley head −8.8 %).</td></tr>
+        <tr><td>Wind, Coriolis, settling</td><td>Exact solutions: uniform acceleration, inertial circles, settling curves; geostrophic balance.</td></tr>
+        <tr><td>Hydraulic and oblique jumps, Lamb–Chaplygin dipole</td><td>Bélanger depths, Ippen's shock angle, dipole speed.</td></tr>
+        <tr><td>GPU against f64, three kernels</td><td>Agreement to about 10<sup>−6</sup> m on dozens of cases; closed water and tracer budgets; 500 randomized stress cases.</td></tr>
+      </table>
+      <p class="note">Details: <a href="https://github.com/uihilab/FluxCell/blob/main/docs/VERIFICATION.md" target="_blank" rel="noopener">docs/VERIFICATION.md</a>; the method in full: <a href="https://github.com/uihilab/FluxCell/blob/main/docs/METHOD.md" target="_blank" rel="noopener">docs/METHOD.md</a>. Run the suites yourself at <code>tools/validate/</code> (GPU) and with <code>npm test</code> (CPU).</p>
+    </section>
+
+    <section id="deploy">
+      <h2>08 Requirements and deployment</h2>
+      <ul>
+        <li><b>Browser:</b> WebGPU (Chrome and Edge 113+, recent Chrome on Android, Safari 26+, Firefox 141+ on Windows). The page must be served over HTTPS or from localhost.</li>
+        <li><b>Dependencies:</b> none. The solver and these demos are native ES modules and WGSL; no build step or bundler.</li>
+        <li><b>Hosting:</b> any static server. Upload <code>src/</code>, <code>examples/viewer/</code> and <code>data/dem/</code> together (the demos load them by relative path) and serve <code>.mjs</code> as <code>text/javascript</code>.</li>
+        <li><b>Tests:</b> <code>npm test</code> runs the CPU suite in Node 20+; <code>npm run serve</code> serves the repository at <code>http://localhost:8080/</code> for the GPU suites and these demos.</li>
+        <li><b>Memory:</b> about 100 bytes of GPU memory per cell for the fused kernel with a tracer; a 1,000 × 1,000 grid fits easily on integrated GPUs.</li>
+      </ul>
+    </section>
+
+    <section id="limits">
+      <h2>09 Limits</h2>
+      <ul>
+        <li>Shallow-water physics: no vertical structure or frequency dispersion (short waves over deep water, the steep fronts of solitary waves, the 3D horseshoe vortex at a pier).</li>
+        <li>Single precision on the GPU (with the safeguards above).</li>
+        <li>Uniform Cartesian grids; no unstructured meshes or nesting.</li>
+        <li>The bed changes only through <code>setBed</code>; sediment transport in the demos is a viewer-side illustration, not part of the verified solver.</li>
+      </ul>
+    </section>
+    </article>
+  </main>
+  <aside class="side">
+    <nav class="contents" aria-label="Contents">
+      <span class="label">Contents</span>
+      <a href="#start"><span>01</span><span>Quick start</span></a>
+      <a href="#inputs"><span>02</span><span>Configuration and inputs</span></a>
+      <a href="#control"><span>03</span><span>Running and control</span></a>
+      <a href="#equations"><span>04</span><span>Equations</span></a>
+      <a href="#scheme"><span>05</span><span>Numerical scheme</span></a>
+      <a href="#gpu"><span>06</span><span>GPU implementation</span></a>
+      <a href="#verification"><span>07</span><span>Verification</span></a>
+      <a href="#deploy"><span>08</span><span>Requirements and deployment</span></a>
+      <a href="#limits"><span>09</span><span>Limits</span></a>
+    </nav>
+    <div class="foot">
+      <a class="hilab" href="https://hydroinformatics.tulane.edu/" target="_blank" rel="noopener" title="HydroInformatics Lab @ Tulane University">
+        <img src="./logo_hilab.png" alt="HILab">
+        <span><span class="name">HydroInformatics Lab</span><span class="at">@Tulane University</span></span>
+      </a>
+    </div>
+  </aside>
+</div>
+</html>

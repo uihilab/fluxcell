@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FluxCell references</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Narrow:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="./site.css">
+<script src="./site.js"></script>
+<style>
+/* References: one list per section, APA style, the DOIs as links. */
+.doc ol { list-style: none; padding: 0; display: grid; gap: .6rem; }
+.doc li { margin: 0; }
+</style>
+<div class="page docs">
+  <header class="top">
+    <div class="brand"><a class="wordmark" href="./">FluxCell</a><span class="dim">v0.9</span>
+      <p>A second-order MUSCL-Hancock scheme with HLLC fluxes, in WebGPU.</p></div>
+    <nav class="links">
+      <a href="./#examples">Examples</a>
+      <a href="./guide.html">Guide</a>
+      <a href="./references.html" aria-current="page">References</a>
+      <a href="https://github.com/uihilab/FluxCell" target="_blank" rel="noopener">GitHub</a>
+      <button id="theme" class="theme">Dark</button>
+    </nav>
+  </header>
+  <main class="main scroll">
+    <article class="doc">
+    <p class="lead"><b>References.</b> <span class="dim">The method, the benchmarks and cases, and the data behind the examples.</span></p>
+    <section id="method">
+      <h2>01 Method</h2>
+      <ol>
+        <li>van Leer, B. (1979). Towards the ultimate conservative difference scheme. V. A second-order sequel to Godunov's method. <em>Journal of Computational Physics, 32</em>(1), 101–136. <a href="https://doi.org/10.1016/0021-9991(79)90145-1" target="_blank" rel="noopener">https://doi.org/10.1016/0021-9991(79)90145-1</a></li>
+        <li>Toro, E. F., Spruce, M., &amp; Speares, W. (1994). Restoration of the contact surface in the HLL-Riemann solver. <em>Shock Waves, 4</em>(1), 25–34. <a href="https://doi.org/10.1007/BF01414629" target="_blank" rel="noopener">https://doi.org/10.1007/BF01414629</a></li>
+        <li>Toro, E. F. (2009). <em>Riemann solvers and numerical methods for fluid dynamics: A practical introduction</em> (3rd ed.). Springer. <a href="https://doi.org/10.1007/b79761" target="_blank" rel="noopener">https://doi.org/10.1007/b79761</a></li>
+        <li>Audusse, E., Bouchut, F., Bristeau, M.-O., Klein, R., &amp; Perthame, B. (2004). A fast and stable well-balanced scheme with hydrostatic reconstruction for shallow water flows. <em>SIAM Journal on Scientific Computing, 25</em>(6), 2050–2065. <a href="https://doi.org/10.1137/S1064827503431090" target="_blank" rel="noopener">https://doi.org/10.1137/S1064827503431090</a></li>
+        <li>Thornber, B., Mosedale, A., Drikakis, D., Youngs, D., &amp; Williams, R. J. R. (2008). An improved reconstruction method for compressible flows with low Mach number features. <em>Journal of Computational Physics, 227</em>(10), 4873–4894. <a href="https://doi.org/10.1016/j.jcp.2008.01.036" target="_blank" rel="noopener">https://doi.org/10.1016/j.jcp.2008.01.036</a></li>
+        <li>Smagorinsky, J. (1963). General circulation experiments with the primitive equations. <em>Monthly Weather Review, 91</em>(3), 99–164. <a href="https://doi.org/10.1175/1520-0493(1963)091&lt;0099:GCEWTP&gt;2.3.CO;2" target="_blank" rel="noopener">https://doi.org/10.1175/1520-0493(1963)091&lt;0099:GCEWTP&gt;2.3.CO;2</a></li>
+        <li>Mehta, A. J. (1986). Characterization of cohesive sediment properties and transport processes in estuaries. In A. J. Mehta (Ed.), <em>Estuarine cohesive sediment dynamics</em> (Lecture Notes on Coastal and Estuarine Studies, Vol. 14, pp. 290–325). Springer New York. <a href="https://doi.org/10.1007/978-1-4612-4936-8_15" target="_blank" rel="noopener">https://doi.org/10.1007/978-1-4612-4936-8_15</a></li>
+        <li>Meyer-Peter, E., &amp; Müller, R. (1948). Formulas for bed-load transport. In <em>Proceedings of the 2nd Meeting of the International Association for Hydraulic Structures Research</em> (pp. 39–64). IAHR.</li>
+        <li>Wu, J. (1982). Wind-stress coefficients over sea surface from breeze to hurricane. <em>Journal of Geophysical Research: Oceans, 87</em>(C12), 9704–9706. <a href="https://doi.org/10.1029/JC087iC12p09704" target="_blank" rel="noopener">https://doi.org/10.1029/JC087iC12p09704</a></li>
+      </ol>
+    </section>
+    <section id="benchmarks">
+      <h2>02 Benchmarks and cases</h2>
+      <ol>
+        <li>Synolakis, C. E., Bernard, E. N., Titov, V. V., Kânoğlu, U., &amp; González, F. I. (2007). <em>Standards, criteria, and procedures for NOAA evaluation of tsunami numerical models</em> (NOAA Technical Memorandum OAR PMEL-135). NOAA Pacific Marine Environmental Laboratory.</li>
+        <li>Briggs, M. J., Synolakis, C. E., Harkins, G. S., &amp; Green, D. R. (1995). Laboratory experiments of tsunami runup on a circular island. <em>Pure and Applied Geophysics, 144</em>, 569–593.</li>
+        <li>Liu, P. L.-F., Yeh, H., &amp; Synolakis, C. (2008). Benchmark problems. In <em>Advanced numerical models for simulating tsunami waves and runup</em> (Advances in Coastal and Ocean Engineering, Vol. 10, pp. 223–230). World Scientific.</li>
+        <li>Matsuyama, M., &amp; Tanaka, H. (2001). An experimental study of the highest run-up height in the 1993 Hokkaido Nansei-Oki earthquake tsunami. In <em>Proceedings of the International Tsunami Symposium 2001</em> (pp. 879–889).</li>
+        <li>Fennema, R. J., &amp; Chaudhry, M. H. (1990). Explicit methods for 2-D transient free surface flows. <em>Journal of Hydraulic Engineering, 116</em>(8), 1013–1034. <a href="https://doi.org/10.1061/(ASCE)0733-9429(1990)116:8(1013)" target="_blank" rel="noopener">https://doi.org/10.1061/(ASCE)0733-9429(1990)116:8(1013)</a></li>
+        <li>Michalke, A. (1964). On the inviscid instability of the hyperbolic-tangent velocity profile. <em>Journal of Fluid Mechanics, 19</em>(4), 543–556. <a href="https://doi.org/10.1017/S0022112064000908" target="_blank" rel="noopener">https://doi.org/10.1017/S0022112064000908</a></li>
+        <li>Williamson, C. H. K. (1996). Vortex dynamics in the cylinder wake. <em>Annual Review of Fluid Mechanics, 28</em>, 477–539. <a href="https://doi.org/10.1146/annurev.fl.28.010196.002401" target="_blank" rel="noopener">https://doi.org/10.1146/annurev.fl.28.010196.002401</a></li>
+        <li>McWilliams, J. C. (1984). The emergence of isolated coherent vortices in turbulent flow. <em>Journal of Fluid Mechanics, 146</em>, 21–43. <a href="https://doi.org/10.1017/S0022112084001750" target="_blank" rel="noopener">https://doi.org/10.1017/S0022112084001750</a></li>
+      </ol>
+    </section>
+    <section id="data">
+      <h2>03 Data</h2>
+      <ol>
+        <li>Cooperative Institute for Research in Environmental Sciences (CIRES) at the University of Colorado, Boulder. (2014). <em>Continuously Updated Digital Elevation Model (CUDEM) – 1/9 arc-second resolution bathymetric-topographic tiles</em> [tiles ncei19_n29x25_w090x00 and ncei19_n29x50_w090x00, 2020v1]. NOAA National Centers for Environmental Information. <a href="https://doi.org/10.25921/ds9v-ky35" target="_blank" rel="noopener">https://doi.org/10.25921/ds9v-ky35</a></li>
+        <li>Sugarbaker, L. J., Constance, E. W., Heidemann, H. K., Jason, A. L., Lukas, V., Saghy, D. L., &amp; Stoker, J. M. (2014). <em>The 3D Elevation Program initiative: A call for action</em> (U.S. Geological Survey Circular 1399). <a href="https://doi.org/10.3133/cir1399" target="_blank" rel="noopener">https://doi.org/10.3133/cir1399</a></li>
+        <li>OpenStreetMap contributors. Building footprints and breakwaters, Grand Isle, Louisiana, retrieved through the Overpass API. Open Database License (ODbL) 1.0. <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">https://www.openstreetmap.org/copyright</a></li>
+        <li>NOAA National Ocean Service. Station 8761724, Grand Isle, LA: tidal datums (epoch 2012–2016) and record water level of 29 August 2021; NOAA VDatum for mean sea level relative to NAVD88. <a href="https://tidesandcurrents.noaa.gov/stationhome.html?id=8761724" target="_blank" rel="noopener">https://tidesandcurrents.noaa.gov/stationhome.html?id=8761724</a></li>
+      </ol>
+    </section>
+    <section id="cite">
+      <h2>04 Cite</h2>
+      <ol>
+        <li>FluxCell: a MUSCL-Hancock/HLLC shallow-water and transport solver in WebGPU. HydroInformatics Lab. <a href="https://github.com/uihilab/FluxCell" target="_blank" rel="noopener">https://github.com/uihilab/FluxCell</a></li>
+      </ol>
+    </section>
+    </article>
+  </main>
+  <aside class="side">
+    <nav class="contents" aria-label="Contents">
+      <span class="label">Contents</span>
+      <a href="#method"><span>01</span><span>Method</span></a>
+      <a href="#benchmarks"><span>02</span><span>Benchmarks and cases</span></a>
+      <a href="#data"><span>03</span><span>Data</span></a>
+      <a href="#cite"><span>04</span><span>Cite</span></a>
+    </nav>
+    <div class="foot">
+      <a class="hilab" href="https://hydroinformatics.tulane.edu/" target="_blank" rel="noopener" title="HydroInformatics Lab @ Tulane University">
+        <img src="./logo_hilab.png" alt="HILab">
+        <span><span class="name">HydroInformatics Lab</span><span class="at">@Tulane University</span></span>
+      </a>
+    </div>
+  </aside>
+</div>
+</html>

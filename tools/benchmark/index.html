@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Solver throughput benchmark</title>
+<style>
+body { max-width: 1100px; margin: 2.5rem auto; padding: 0 1rem; font: 16px system-ui; color: #162a3a; }
+button, select { padding: .6rem .9rem; margin-right: .5rem; }
+table { border-collapse: collapse; margin: 1rem 0; font-variant-numeric: tabular-nums; }
+th, td { padding: .35rem .7rem; border-bottom: 1px solid #d5dde5; text-align: right; }
+th:nth-child(-n+3), td:nth-child(-n+3) { text-align: left; }
+pre { background: #eef2f6; padding: 1rem; white-space: pre-wrap; overflow-wrap: anywhere; max-height: 22rem; overflow: auto; }
+</style>
+<h1>Solver throughput benchmark</h1>
+<p>Compares the multi-pass MUSCL kernels (five dispatches and one scalar readback per step)
+with the fused tiled kernel, submitted one step at a time and in GPU-resident batches.
+Each run warms up 20 steps, then times 30 batches. Times are wall-clock to queue completion
+(readback included); there is no rendering and no CPU reference. Numerical correctness is
+established separately by the <a href="../validate/">validation suite</a>.</p>
+<label>Largest grid <select id="largest"><option>256</option><option selected>1024</option><option>2048</option></select></label>
+<button id="run">Run benchmark</button>
+<button id="download" disabled>Download report</button>
+<p id="status" role="status">Ready. Requires WebGPU on localhost or HTTPS.</p>
+<table id="table"><thead><tr><th>Workload</th><th>Grid</th><th>Variant</th><th>Steps/batch</th>
+<th>Median ms/step</th><th>p95 ms/step</th><th>Mcell-steps/s</th><th>Speed-up</th><th>GPU MiB</th></tr></thead><tbody></tbody></table>
+<pre id="output">No results yet.</pre>
+<script type="module" src="./bench.mjs"></script>
+</html>

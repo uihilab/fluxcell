@@ -1,0 +1,23 @@
+{
+  "width": 700,
+  "height": 550,
+  "dx": 2.0,
+  "dy": 2.0,
+  "rowOrder": "south-to-north (row 0 on the Gulf edge)",
+  "centre": {
+    "lon": -89.96918070769136,
+    "lat": 29.246016783768123
+  },
+  "centreIs": "on the fitted dune crest, at mid-length",
+  "shorelineAngleFromEast_deg": 29.731625519643543,
+  "units": "m (NAVD88)",
+  "meanSeaLevel_NAVD88_m": 0.072,
+  "idaPeak_NAVD88_m": 1.6380000000000001,
+  "sources": {
+    "bed": "NOAA NCEI CUDEM 1/9 arc-second topobathymetry (doi:10.25921/ds9v-ky35), tiles ncei19_n29x50_w090x00_2020v1.tif, ncei19_n29x25_w090x00_2020v1.tif; public domain; resampled bilinearly onto this grid",
+    "buildings": "OpenStreetMap (39 buildings, 9 breakwaters or groynes widened to 9 m; (c) OpenStreetMap contributors, ODbL), retrieved 2026-10-19T17:11:12+00:00",
+    "shape": "grandisle-shape.i8: signed distance to the buildings and breakwaters at the cell centres, in 1/16 cell, clamped to 8 cells (negative inside)",
+    "meanSeaLevel": "NOAA VDatum: local mean sea level = +0.072 m NAVD88 at 29.24 N, 89.97 W (uncertainty 0.157 m)",
+    "idaPeak": "NOAA station 8761724 (Grand Isle): maximum 3.665 m above station datum on 2021-08-29 22:54 GMT, MSL 2.099 m (epoch 2012-2016): 1.566 m above MSL"
+  }
+}

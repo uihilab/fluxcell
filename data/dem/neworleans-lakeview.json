@@ -1,0 +1,26 @@
+{
+  "name": "neworleans-lakeview",
+  "source": "USGS 3DEP ImageServer exportImage (bilinear, F32)",
+  "mosaic": "locked to 1/3 arc-second rasters n31w091 (4966), n30w091 (5737); default mosaic clamped negatives",
+  "url": "https://elevation.nationalmap.gov/arcgis/rest/services/3DEPElevation/ImageServer/exportImage?bbox=566786.981370627%2C784725.911819227%2C569346.981370627%2C787285.911819227&bboxSR=5070&imageSR=5070&size=256%2C256&format=bsq&pixelType=F32&noData=-9999&interpolation=RSP_BilinearInterpolation&mosaicRule=%7B%22mosaicMethod%22%3A%22esriMosaicLockRaster%22%2C%22lockRasterIds%22%3A%5B4966%2C5737%5D%7D&f=image",
+  "retrieved": "2026-10-16T17:27:54.067Z",
+  "centre": {
+    "lon": -90.103,
+    "lat": 29.991
+  },
+  "crs": "EPSG:5070",
+  "bbox": [
+    566786.981370627,
+    784725.911819227,
+    569346.981370627,
+    787285.911819227
+  ],
+  "width": 256,
+  "height": 256,
+  "dx": 10,
+  "dy": 10,
+  "rowOrder": "north-to-south",
+  "units": "m (NAVD88)",
+  "min": -4.827134609222412,
+  "max": 2.904604434967041
+}

@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SWASHES benchmarks</title>
+<style>
+body { max-width: 1100px; margin: 2.5rem auto; padding: 0 1rem; font: 16px system-ui; color: #162a3a; }
+button { padding: .5rem .7rem; font: inherit; }
+pre { background: #eef2f6; padding: 1rem; white-space: pre-wrap; overflow-wrap: anywhere; max-height: 36rem; overflow: auto; }
+</style>
+<h1>SWASHES analytic benchmarks</h1>
+<p>Thacker's planar surface in a paraboloid (2D, moving shoreline, errors at T/2, T and 2T) and
+Goutal and Maurel's steady flows over a bump (subcritical, transcritical, and transcritical with a
+hydraulic jump; discharge inflow and stage outflow, 200 s). The fused GPU kernel runs at four
+resolutions; the f64 MUSCL and Rusanov references run at the two coarsest.</p>
+<button id="run">Run</button>
+<p id="status" role="status">Ready.</p>
+<pre id="output">No results yet.</pre>
+<script type="module" src="./swashes.mjs"></script>
+</html>

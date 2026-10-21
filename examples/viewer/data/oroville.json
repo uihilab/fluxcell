@@ -1,0 +1,18 @@
+{
+  "width": 874,
+  "height": 900,
+  "dx": 2,
+  "rowOrder": "south-to-north",
+  "units": "m (NAVD88)",
+  "peak_NAVD88_m": 275.81543200000004,
+  "crest_NAVD88_m": 275.3308,
+  "spillElevation_m": 274.9426574707031,
+  "weirCrestMedian_m": 275.3300323486328,
+  "release_m3s": 1557.4265625600003,
+  "sources": {
+    "terrain": "USGS 3DEP, retrieved 2026-10-19T22:25:22.199Z",
+    "levels": "CDEC station ORO (California DWR), hourly reservoir elevation (sensor 6), peak 902.59 ft at 2017-02-12 03:00; outflow (sensor 23) 55,070 ft\u00b3/s at that time",
+    "datum": "project elevations NGVD29; +0.706 m to NAVD88 (NGS VERTCON 3.0 at 39.545 N, 121.49 W)",
+    "crest": "emergency spillway weir crest 901 ft (California Water Commission, 2023 Oroville handout)"
+  }
+}

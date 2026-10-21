@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Precision sweep</title>
+<style>
+body { max-width: 1100px; margin: 2.5rem auto; padding: 0 1rem; font: 16px system-ui; color: #162a3a; }
+button { padding: .5rem .7rem; font: inherit; }
+pre { background: #eef2f6; padding: 1rem; white-space: pre-wrap; overflow-wrap: anywhere; max-height: 36rem; overflow: auto; }
+</style>
+<h1>Elevation-offset precision sweep</h1>
+<p>Each problem is lifted by 0 to 8,000 m and run on the fused f32 kernel with the automatic datum
+shift and with raw elevations (datum 0), then compared with the f64 MUSCL reference at the same
+offset after 400 steps.</p>
+<button id="run">Run</button>
+<p id="status" role="status">Ready.</p>
+<pre id="output">No results yet.</pre>
+<script type="module" src="./precision.mjs"></script>
+</html>

@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Shallow-water numerical validation</title>
+<style>
+body { max-width: 1050px; margin: 2.5rem auto; padding: 0 1rem; font: 16px system-ui; color: #162a3a; }
+button { padding: .7rem 1rem; margin-right: .5rem; }
+pre { background: #eef2f6; padding: 1rem; white-space: pre-wrap; overflow-wrap: anywhere; }
+</style>
+<h1>Shallow-water numerical validation</h1>
+<p>Runs the new WebGPU core against analytical equilibria, water
+budgets, and an independent f64 CPU implementation. No maps or rendering are required.</p>
+<p>Fifteen 1,000-step cases (including friction, sources, obstacles, open and outflow
+boundaries), 21 edge-size cases and five repeatability runs. MUSCL methods also run
+smooth-wave refinement and exact dam-break comparisons; the fused kernel is also
+compared step by step with the multi-pass MUSCL kernel.</p>
+<label for="scheme">Method</label>
+<select id="scheme"><option value="rusanov">First-order Rusanov</option><option value="muscl-hancock">MUSCL-Hancock / HLLC (multi-pass)</option><option value="muscl-fused">MUSCL-Hancock / HLLC (fused, batched)</option></select>
+<button id="run">Run GPU validation suite</button>
+<button id="download" disabled>Download report</button>
+<p id="status" role="status">Ready. Requires WebGPU on localhost or HTTPS.</p>
+<pre id="output">No results yet.</pre>
+<script type="module" src="./check.mjs"></script>
+</html>

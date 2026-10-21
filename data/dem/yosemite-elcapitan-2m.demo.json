@@ -1,0 +1,36 @@
+{
+  "name": "yosemite-elcapitan-2m",
+  "source": "USGS 3DEP ImageServer exportImage (bilinear, F32)",
+  "mosaic": "locked to lidar survey CA_YosemiteNP_2019|CA_SouthernSierra_2020: CA_SouthernSierra_2020_B20 (23576, 1 m), CA_YosemiteNP_2019_D19 (52623, 1 m), CA_YosemiteNP_2019_D19 (75593, 1 m)",
+  "url": "https://elevation.nationalmap.gov/arcgis/rest/services/3DEPElevation/ImageServer/exportImage?bbox=-2043655.9180697598%2C1885589.461663242%2C-2040583.9180697598%2C1888661.461663242&bboxSR=5070&imageSR=5070&size=1536%2C1536&format=bsq&pixelType=F32&noData=-9999&interpolation=RSP_BilinearInterpolation&mosaicRule=%7B%22mosaicMethod%22%3A%22esriMosaicLockRaster%22%2C%22lockRasterIds%22%3A%5B23576%2C52623%2C75593%5D%7D&f=image",
+  "retrieved": "2026-10-18T02:34:18.964Z",
+  "centre": {
+    "lon": -119.633,
+    "lat": 37.724
+  },
+  "crs": "EPSG:5070",
+  "bbox": [
+    -2043655.9180697598,
+    1885589.461663242,
+    -2040583.9180697598,
+    1888661.461663242
+  ],
+  "width": 768,
+  "height": 768,
+  "dx": 2,
+  "dy": 2,
+  "rowOrder": "north-to-south",
+  "units": "m (NAVD88)",
+  "min": 1190.8133544921875,
+  "max": 2315.591552734375,
+  "window": {
+    "of": "yosemite-elcapitan-2m",
+    "origin": [
+      404,
+      700
+    ],
+    "width": 1536,
+    "height": 1536
+  },
+  "note": "Window [404,700,768,768] (x0, y0 from the south-west, width, height) of yosemite-elcapitan-2m, for the viewer demos."
+}

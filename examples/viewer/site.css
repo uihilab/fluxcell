@@ -1,0 +1,102 @@
+/* Shared by the FluxCell pages (examples, guide, references): colours, type, and the page frame.
+   The frame fills the window and never scrolls: a header across the top, the page's content on the
+   left (which scrolls on its own where it is long), and a right column with the page's controls or
+   contents and the lab at its foot. Light by default; dark only when chosen (site.js). */
+:root { color-scheme: light; --paper: #ffffff; --ink: #000000; --dim: rgba(0, 0, 0, .5); --rule: rgba(0, 0, 0, .14);
+  --shade: rgba(0, 0, 0, .045); --code: rgba(0, 0, 0, .04); }
+:root[data-theme="dark"] { color-scheme: dark; --paper: #0b0b0b; --ink: #ededed; --dim: rgba(237, 237, 237, .55); --rule: rgba(237, 237, 237, .16);
+  --shade: rgba(237, 237, 237, .07); --code: rgba(255, 255, 255, .06); }
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; overflow: hidden; background: var(--paper); color: var(--ink); }
+body { font: 400 13px/1.32 "Archivo Narrow", "Arial Narrow", sans-serif; letter-spacing: .01em; }
+a { color: inherit; text-decoration: none; }
+button { all: unset; cursor: pointer; }
+button:hover, a:hover { color: var(--ink); }
+button:focus-visible, a:focus-visible { outline: 1px solid var(--ink); outline-offset: 2px; }
+.dim { color: var(--dim); }
+b { font-weight: 600; }
+
+.page { display: grid; height: 100vh; height: 100dvh; padding: 1rem 1.5rem 1.2rem; gap: 0 2.5rem;
+  grid-template-columns: minmax(0, 1fr) 17rem; grid-template-rows: auto minmax(0, 1fr);
+  grid-template-areas: "top top" "main side"; }
+.top { grid-area: top; display: flex; justify-content: space-between; align-items: flex-end; gap: 2rem; text-transform: uppercase;
+  padding-bottom: .8rem; margin-bottom: 1.1rem; border-bottom: 1px solid var(--rule); }
+.brand { display: flex; align-items: baseline; gap: .9rem; min-width: 0; }
+.wordmark { font-size: 34px; line-height: 1; font-weight: 600; letter-spacing: .03em; }
+.brand p { margin: 0; color: var(--dim); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.links { display: flex; align-items: baseline; gap: 1.4rem; color: var(--dim); white-space: nowrap; }
+.links [aria-current="page"] { color: var(--ink); font-weight: 600; }
+.links .theme { padding-left: 1.4rem; border-left: 1px solid var(--rule); }
+.main { grid-area: main; min-width: 0; min-height: 0; }
+/* Content that scrolls inside its pane (guide, references); the frame stays put. */
+.scroll { overflow: hidden auto; scrollbar-width: thin; padding-right: 1rem; }
+
+.side { grid-area: side; display: flex; flex-direction: column; gap: 1.05rem; min-height: 0; text-transform: uppercase; }
+.side > section { display: grid; gap: .8rem; border-top: 1px solid var(--rule); padding-top: .7rem; }
+.side > section:first-child { border-top: 0; padding-top: 0; }
+.side > section:empty, .side > section[hidden] { display: none; }
+.side .foot { margin-top: auto; display: grid; gap: .7rem; }
+/* Numbered contents in the right column (guide, references), the section in view marked. */
+.contents { display: grid; gap: .25rem; }
+.contents .label { font-weight: 600; margin-bottom: .2rem; }
+.contents a { color: var(--dim); display: grid; grid-template-columns: 1.7rem 1fr; }
+.contents a[aria-current="true"] { color: var(--ink); }
+/* HydroInformatics Lab badge, at the foot of the right column. */
+.hilab { display: flex; align-items: center; gap: 10px; padding: 6px 10px 6px 8px;
+  background: rgba(10, 11, 16, .72); border: 1px solid rgba(255, 255, 255, .07); border-radius: 6px;
+  text-transform: none; letter-spacing: 0; font-family: system-ui, sans-serif; }
+.hilab img { height: 44px; width: auto; display: block; flex-shrink: 0; }
+.hilab span { display: block; white-space: nowrap; line-height: 1.2; }
+.hilab .name { font-size: 11px; font-weight: 700; letter-spacing: .03em; color: #d1d5db; }
+.hilab .at { font-size: 10px; letter-spacing: .02em; color: #9ca3af; }
+
+@media (max-width: 1250px) { .brand p { display: none; } }
+@media (max-width: 1100px) { .page { grid-template-columns: minmax(0, 1fr) 15rem; gap: 0 1.6rem; } .page.docs { grid-template-columns: 13rem minmax(0, 1fr); } .links { gap: 1rem; } .links .theme { padding-left: 1rem; } }
+/* Phones: one column, and the page scrolls as a whole. */
+@media (max-width: 860px) {
+  html, body { height: auto; overflow: auto; }
+  .page, .page.docs { height: auto; grid-template-columns: minmax(0, 1fr); grid-template-rows: none; grid-template-areas: "top" "main" "side"; }
+  .top { flex-direction: column; align-items: flex-start; gap: .8rem; }
+  .links { flex-wrap: wrap; }
+  .scroll { overflow: visible; padding-right: 0; }
+  .side { margin-top: 1.6rem; }
+}
+
+/* Documents (guide, references): the contents and the lab on the left, the text across the rest; a
+   lead line, then numbered sections under rules. */
+.page.docs { grid-template-columns: 15rem minmax(0, 1fr); grid-template-areas: "top top" "side main"; }
+.doc { max-width: 78rem; font-size: 15.5px; line-height: 1.6; letter-spacing: 0; padding-bottom: 2rem; }
+.doc .lead { margin: 0 0 1.4rem; font-size: 13px; line-height: 1.32; letter-spacing: .01em; text-transform: uppercase; }
+.doc section { padding-bottom: 1.6rem; margin-bottom: 1.6rem; border-bottom: 1px solid var(--rule); }
+.doc section:last-child { border-bottom: 0; margin-bottom: 0; }
+.doc h2 { font: 600 13px/1.3 "Archivo Narrow", "Arial Narrow", sans-serif; text-transform: uppercase; letter-spacing: .01em; margin: 0 0 .8rem; }
+.doc h3 { font-size: 14.5px; font-weight: 600; margin: 1.2rem 0 .3rem; }
+.doc p { margin: 0 0 .7rem; }
+.doc ul, .doc ol { margin: 0 0 .7rem; padding-left: 1.2rem; }
+.doc li { margin-bottom: .25rem; }
+.doc a { text-decoration: underline; text-decoration-color: var(--rule); text-underline-offset: 2px; }
+.doc a:hover { text-decoration-color: var(--ink); }
+
+/* Phones, after the rules above: the guide and references put their contents first, then the text,
+   then the lab; type and code a little smaller. */
+@media (max-width: 860px) {
+  .page { padding: .9rem 1rem 1.2rem; }
+  .wordmark { font-size: 28px; }
+  .page.docs { grid-template-columns: minmax(0, 1fr); grid-template-areas: "top" "side" "main" "foot"; }
+  .page.docs .side { display: contents; }
+  .page.docs .contents { grid-area: side; padding-bottom: 1rem; margin-bottom: 1.4rem; border-bottom: 1px solid var(--rule); }
+  .page.docs .foot { grid-area: foot; margin-top: 1.6rem; }
+  .doc { font-size: 15px; }
+  .doc pre { font-size: 12px; padding: .8rem .9rem; }
+  .doc code { font-size: 12px; }
+  .doc td code { overflow-wrap: normal; }
+  .doc table { font-size: 13.5px; }
+  /* Equations a size smaller; one still wider than the screen scrolls on its own line. */
+  .doc math[display="block"] { font-size: .9em; overflow-x: auto; overflow-y: hidden; }
+}
+/* Touch screens: larger targets. */
+@media (pointer: coarse) {
+  .links { gap: .2rem 1.1rem; }
+  .links a, .links button { padding: .35rem 0; }
+  .contents a { padding: .3rem 0; }
+}

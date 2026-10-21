@@ -1,0 +1,14 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Shallow-flow dynamics</title>
+<style>body { max-width: 900px; margin: 2.5rem auto; padding: 0 1rem; font: 16px system-ui; color: #162a3a; } button, input { padding: .4rem .6rem; font: inherit; } pre { font-size: 12px; white-space: pre-wrap; }</style>
+<h1>Shallow-flow dynamics (fused kernel)</h1>
+<p>Kelvin-Helmholtz growth rate, vortex shedding behind an island, decaying two-dimensional turbulence.</p>
+<label>Parts <input id="parts" value="kh,wake,exit,turbulence" size="30"></label>
+<button id="run">Run</button>
+<p id="status" role="status">Ready.</p>
+<pre id="output"></pre>
+<script type="module" src="./dynamics.mjs"></script>
+</html>
