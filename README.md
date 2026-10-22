@@ -199,6 +199,12 @@ which is not versioned.
 - [Method](docs/METHOD.md): the numerical method in full.
 - [Verification](docs/VERIFICATION.md): what has been checked and the results.
 
+## Citing FluxCell
+
+If you use FluxCell in your work, please cite it. Each release is archived on Zenodo with a DOI, and
+GitHub's "Cite this repository" button (from [CITATION.cff](CITATION.cff)) gives the citation in APA
+and BibTeX. A paper describing the method and its verification is forthcoming.
+
 ## License, citation and data credits
 
 The code is MIT licensed (see [LICENSE](LICENSE), which also lists the terms of the bundled data
