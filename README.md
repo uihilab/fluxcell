@@ -54,7 +54,7 @@ npm install github:uihilab/FluxCell
 ```
 
 or copy `src/` into a project. The shaders are loaded relative to the module URL, so
-`src/shaders/` must stay next to `src/webgpu.mjs` and be served with the modules.
+`src/shaders/` must stay next to `src/webgpu.mjs` and be served with the modules. (NPM package coming soon).
 
 ## Usage in the browser
 
