@@ -27,3 +27,15 @@ abstract: >-
   WebGPU compute shaders, with wet/dry fronts, Manning friction, rain and point sources, solid
   cells, stage and discharge hydrograph boundaries, a fused single-dispatch tiled kernel with a
   GPU-resident timestep, and f64 CPU references.
+preferred-citation:
+  type: article
+  title: "FluxCell: A Single-Dispatch MUSCL-Hancock Solver for Shallow Flow and Scalar Transport in WebGPU"
+  status: in-preparation
+  year: 2026
+  authors:
+    - family-names: "Erazo Ramirez"
+      given-names: "Carlos"
+      affiliation: "Tulane University"
+    - family-names: "Demir"
+      given-names: "Ibrahim"
+      affiliation: "Tulane University"

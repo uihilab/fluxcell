@@ -201,9 +201,13 @@ which is not versioned.
 
 ## Citing FluxCell
 
-If you use FluxCell in your work, please cite it. Each release is archived on Zenodo with a DOI, and
-GitHub's "Cite this repository" button (from [CITATION.cff](CITATION.cff)) gives the citation in APA
-and BibTeX. A paper describing the method and its verification is forthcoming.
+If you use FluxCell in your work, please cite the paper:
+
+> Erazo Ramirez, C., and Demir, I. (2026). FluxCell: A Single-Dispatch MUSCL-Hancock Solver for
+> Shallow Flow and Scalar Transport in WebGPU (in preparation).
+
+Each release of the code is also archived on Zenodo with a DOI. GitHub's "Cite this repository"
+button (from [CITATION.cff](CITATION.cff)) gives the citation in APA and BibTeX.
 
 ## License, citation and data credits
 
