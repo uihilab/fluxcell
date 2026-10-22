@@ -44,7 +44,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/uihilab/FluxCell.git"
+    "url": "git+https://github.com/uihilab/fluxcell.git"
   },
-  "homepage": "https://github.com/uihilab/FluxCell"
+  "homepage": "https://github.com/uihilab/fluxcell"
 }

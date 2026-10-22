@@ -34,7 +34,7 @@
       <a href="./#examples">Examples</a>
       <a href="./guide.html" aria-current="page">Guide</a>
       <a href="./references.html">References</a>
-      <a href="https://github.com/uihilab/FluxCell" target="_blank" rel="noopener">GitHub</a>
+      <a href="https://github.com/uihilab/fluxcell" target="_blank" rel="noopener">GitHub</a>
       <button id="theme" class="theme">Dark</button>
     </nav>
   </header>
@@ -126,7 +126,7 @@ hydrographs: [
         <tr><td><code>destroy()</code></td><td>Free the GPU buffers.</td></tr>
       </table>
       <p>Host fields: <code>time</code>, <code>sourceVolume</code>, <code>counters</code> (flux fallbacks, order reductions, retries) and <code>allocatedBytes</code>. The double-precision CPU solvers <code>MusclReferenceSolver</code> and <code>ReferenceSolver</code> take the same configuration and run in Node or the browser, for testing and for checking GPU results.</p>
-      <p class="note">Full reference: <a href="https://github.com/uihilab/FluxCell/blob/main/docs/API.md" target="_blank" rel="noopener">docs/API.md</a>.</p>
+      <p class="note">Full reference: <a href="https://github.com/uihilab/fluxcell/blob/main/docs/API.md" target="_blank" rel="noopener">docs/API.md</a>.</p>
     </section>
 
     <section id="equations">
@@ -180,7 +180,7 @@ hydrographs: [
         <tr><td>Hydraulic and oblique jumps, Lamb–Chaplygin dipole</td><td>Bélanger depths, Ippen's shock angle, dipole speed.</td></tr>
         <tr><td>GPU against f64, three kernels</td><td>Agreement to about 10<sup>−6</sup> m on dozens of cases; closed water and tracer budgets; 500 randomized stress cases.</td></tr>
       </table>
-      <p class="note">Details: <a href="https://github.com/uihilab/FluxCell/blob/main/docs/VERIFICATION.md" target="_blank" rel="noopener">docs/VERIFICATION.md</a>; the method in full: <a href="https://github.com/uihilab/FluxCell/blob/main/docs/METHOD.md" target="_blank" rel="noopener">docs/METHOD.md</a>. Run the suites yourself at <code>tools/validate/</code> (GPU) and with <code>npm test</code> (CPU).</p>
+      <p class="note">Details: <a href="https://github.com/uihilab/fluxcell/blob/main/docs/VERIFICATION.md" target="_blank" rel="noopener">docs/VERIFICATION.md</a>; the method in full: <a href="https://github.com/uihilab/fluxcell/blob/main/docs/METHOD.md" target="_blank" rel="noopener">docs/METHOD.md</a>. Run the suites yourself at <code>tools/validate/</code> (GPU) and with <code>npm test</code> (CPU).</p>
     </section>
 
     <section id="deploy">

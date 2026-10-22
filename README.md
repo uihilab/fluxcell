@@ -50,7 +50,7 @@ CPU references for testing. No dependencies and no build step.
 The library is plain ES modules with no dependencies and no build step. Install it from GitHub,
 
 ```sh
-npm install github:uihilab/FluxCell
+npm install github:uihilab/fluxcell
 ```
 
 or copy `src/` into a project. The shaders are loaded relative to the module URL, so

@@ -3,7 +3,7 @@
 const $ = selector => document.querySelector(selector);
 
 export const el = {
-    canvas: $('#canvas'), work: $('.work'), hud: $('#hud'), error: $('#error'),
+    canvas: $('#canvas'), work: $('.work'), hud: $('#hud'), error: $('#error'), loading: $('#loading'), loadingText: $('#loadingText'),
     select: $('#scenario'), play: $('#play'), reset: $('#reset'), speed: $('#speed'), speedValue: $('#speedValue'),
     colour: $('#colour'), lowFroude: $('#lowFroude'), closure: $('#closure'),
     tools: $('#tools'), flow: $('#flow'), flowValue: $('#flowValue'), rain: $('#rain'),

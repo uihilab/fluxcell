@@ -74,7 +74,7 @@ osm = None
 for attempt in range(6):  # the public Overpass servers are often busy; try the main one and a mirror
     endpoint = ["https://overpass-api.de/api/interpreter", "https://overpass.kumi.systems/api/interpreter"][attempt % 2]
     request = urllib.request.Request(endpoint, data=urllib.parse.urlencode({"data": query}).encode(),
-                                     headers={"User-Agent": "FluxCell demo data (github.com/uihilab/FluxCell)"})
+                                     headers={"User-Agent": "FluxCell demo data (github.com/uihilab/fluxcell)"})
     try:
         osm = json.loads(urllib.request.urlopen(request, timeout=180).read()); break
     except Exception as error:  # noqa: BLE001

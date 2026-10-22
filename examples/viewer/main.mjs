@@ -24,7 +24,11 @@ import './input.mjs';
 const requested = new URLSearchParams(location.search).get('demo');
 el.select.value = requested && el.select.querySelector(`option[value="${CSS.escape(requested)}"]`) ? requested : 'grandisle-ida';
 
+// The loading box over the map: a message while starting up or switching examples, hidden when ready.
+const loading = text => { el.loading.hidden = !text; if (text) el.loadingText.textContent = text; };
+
 async function main() {
+    loading('Starting WebGPU…');
     const adapter = await navigator.gpu?.requestAdapter();
     if (!adapter) throw new Error('WebGPU is unavailable in this browser.');
     const device = app.device = await adapter.requestDevice({ requiredLimits: {
@@ -34,6 +38,7 @@ async function main() {
         window.gpuErrors.push(event.error.message);
         if (window.gpuErrors.length === 1) el.error.textContent = event.error.message;
     });
+    loading('Compiling the solver…');
     app.kernels = await compileKernels(device, 'muscl-fused');
     const format = navigator.gpu.getPreferredCanvasFormat(), context = el.canvas.getContext('webgpu');
     context.configure({ device, format, alphaMode: 'opaque' });
@@ -50,6 +55,7 @@ async function setup(name) {
     while (app.solver?.busy) await new Promise(r => setTimeout(r, 5));
     app.solver?.destroy();
     let scenario;
+    loading(`Loading ${el.select.selectedOptions[0]?.textContent?.trim() || 'the example'}…`);
     try {
         scenario = await SCENARIOS[name](paramValues(name));
         if (token !== app.generation) return;
@@ -61,6 +67,7 @@ async function setup(name) {
     } finally { if (token === app.generation) app.switching = false; }
     if (token !== app.generation) return;
     app.scenario = scenario;
+    loading(null);
     if (DEBUG) window.__demo = { solver: app.solver, scenario, camera, zoom }; // for automated checks and captures
     zoom.k = 1; zoom.cx = zoom.cy = 0.5; // each demo opens fitted
     prepareResources(scenario);
@@ -150,7 +157,7 @@ function showReadout(view) {
 
 function setPlaying(on) { app.playing = on; el.play.textContent = on ? 'Pause' : 'Play'; syncControls(); }
 
-const started = main().catch(error => { el.error.textContent = error.message; el.hud.textContent = ''; });
+const started = main().catch(error => { loading(null); el.error.textContent = error.message; el.hud.textContent = ''; });
 const restart = () => started.then(() => setup(el.select.value)).catch(e => { el.error.textContent = e.message; });
 for (const input of [el.select, el.lowFroude, el.closure]) input.addEventListener('change', restart);
 el.reset.addEventListener('click', restart);

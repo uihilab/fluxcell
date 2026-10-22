@@ -26,6 +26,15 @@ canvas { display: block; background: #000; touch-action: none; cursor: grab; }
 .maplegend { position: absolute; top: 10px; left: 10px; display: grid; gap: 3px; padding: 6px 8px 5px; background: rgba(255, 255, 255, .84);
   color: #000; font-size: 11px; letter-spacing: .02em; pointer-events: none; }
 .maplegend[hidden] { display: none; }
+/* Shown from the first paint until the example is ready (and while another loads). */
+.loading { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; pointer-events: none; }
+.loading[hidden] { display: none; }
+.loading::before { content: ''; position: absolute; inset: 0; background: rgba(0, 0, 0, .35); }
+.loading .box { position: relative; display: flex; align-items: center; gap: 9px; padding: 8px 12px; background: rgba(255, 255, 255, .9);
+  color: #000; font-size: 12px; letter-spacing: .02em; }
+.loading .spinner { width: 11px; height: 11px; border: 2px solid #999; border-top-color: transparent; border-radius: 50%;
+  animation: spin .8s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
 .maplegend .mlbar { width: 132px; height: 6px; background: linear-gradient(90deg, rgb(115, 148, 92), rgb(158, 163, 107) 40%, rgb(163, 138, 105) 75%, rgb(214, 209, 199)); }
 .maplegend .mlticks { display: flex; justify-content: space-between; font-variant-numeric: tabular-nums; }
 .attribution { position: absolute; right: 0; bottom: 0; padding: 2px 7px; background: rgba(255, 255, 255, .78); color: #333;
@@ -149,7 +158,7 @@ dialog.catalog::backdrop { background: rgba(0, 0, 0, .42); backdrop-filter: blur
       <button id="openExamples" aria-current="page" aria-haspopup="dialog">Examples</button>
       <a href="./guide.html">Guide</a>
       <a href="./references.html">References</a>
-      <a href="https://github.com/uihilab/FluxCell" target="_blank" rel="noopener">GitHub</a>
+      <a href="https://github.com/uihilab/fluxcell" target="_blank" rel="noopener">GitHub</a>
       <button id="theme" class="theme">Dark</button>
     </nav>
   </header>
@@ -162,6 +171,7 @@ dialog.catalog::backdrop { background: rgba(0, 0, 0, .42); backdrop-filter: blur
     </section>
     <main class="work">
       <div class="stage"><canvas id="canvas" width="1024" height="512"></canvas>
+        <div class="loading" id="loading" role="status"><div class="box"><span class="spinner"></span><span id="loadingText">Loading FluxCell…</span></div></div>
         <div class="maplegend" id="mapLegend" hidden><span id="mlLabel">Elevation</span><span class="mlbar" id="mlBar"></span>
           <span class="mlticks"><span id="mlLo"></span><span id="mlHi"></span></span></div>
         <span class="attribution">Data: USGS 3DEP, NOAA CUDEM, © OpenStreetMap contributors, NTHMP</span></div>
